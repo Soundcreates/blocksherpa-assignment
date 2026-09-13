@@ -14,6 +14,7 @@ import { propertiesAPI } from '../services/api';
 import { useSEO } from '../hooks/useSEO';
 import StructuredData from '../components/common/StructuredData';
 import { formatPrice } from '../utils/formatPrice';
+import OnChainRegistryCard from '../components/property-details/OnChainRegistryCard';
 
 interface PropertyData {
   _id: string;
@@ -193,6 +194,11 @@ const PropertyDetailsPage: React.FC = () => {
                   location={property.location}
                   propertyName={property.title}
                   googleMapLink={property.googleMapLink}
+                />
+
+                <OnChainRegistryCard
+                  propertyAddress={property.location}
+                  price={property.price}
                 />
               </div>
             </div>

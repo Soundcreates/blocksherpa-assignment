@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "type": "info",
+    "title": "New User Registered",
+    "message": "Bob Smith has registered an account.",
+    "timestamp": "2026-06-17T11:00:00Z",
+    "read": false
+  },
+  {
+    "id": 2,
+    "type": "warning",
+    "title": "Server Error Detected",
+    "message": "API server returned 502 error. Investigation underway.",
+    "timestamp": "2026-06-17T10:45:00Z",
+    "read": false
+  },
+  {
+    "id": 3,
+    "type": "success",
+    "title": "Deployment Complete",
+    "message": "Version 2.3.0 was successfully deployed to production.",
+    "timestamp": "2026-06-17T09:30:00Z",
+    "read": true
+  },
+  {
+    "id": 4,
+    "type": "critical",
+    "title": "Security Alert",
+    "message": "Multiple failed login attempts detected from IP 192.168.1.50.",
+    "timestamp": "2026-06-16T22:15:00Z",
+    "read": false
+  },
+  {
+    "id": 5,
+    "type": "info",
+    "title": "New Comment",
+    "message": "Grace Lee commented on 'Design Homepage'.",
+    "timestamp": "2026-06-16T16:30:00Z",
+    "read": true
+  }
+]

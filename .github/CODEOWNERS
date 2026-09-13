@@ -1,0 +1,11 @@
+# These owners will be the default owners for everything in the repo
+* @David Chen
+
+# Backend code owners
+/backend/ @David Chen
+
+# Frontend code owners
+/frontend/ @David Chen
+
+# Admin dashboard code owners
+/admin/ @David Chen

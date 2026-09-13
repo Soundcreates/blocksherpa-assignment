@@ -1,0 +1,21 @@
+{
+  "name": "Inter",
+  "version": "4.0.0",
+  "designer": "Rasmus Andersson",
+  "license": "OFL-1.1",
+  "category": "sans-serif",
+  "weights": [
+    { "value": 100, "name": "Thin" },
+    { "value": 200, "name": "ExtraLight" },
+    { "value": 300, "name": "Light" },
+    { "value": 400, "name": "Regular" },
+    { "value": 500, "name": "Medium" },
+    { "value": 600, "name": "SemiBold" },
+    { "value": 700, "name": "Bold" },
+    { "value": 800, "name": "ExtraBold" },
+    { "value": 900, "name": "Black" }
+  ],
+  "styles": ["normal", "italic"],
+  "variable": true,
+  "fallback": ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"]
+}

@@ -1,0 +1,39 @@
+{
+  "general": {
+    "siteName": "Admin Panel",
+    "siteDescription": "Administrative dashboard for the platform",
+    "timezone": "UTC",
+    "dateFormat": "YYYY-MM-DD",
+    "timeFormat": "HH:mm"
+  },
+  "security": {
+    "twoFactorAuth": true,
+    "sessionTimeout": 3600,
+    "maxLoginAttempts": 5,
+    "passwordPolicy": {
+      "minLength": 10,
+      "requireSpecialChar": true,
+      "requireNumber": true,
+      "requireUppercase": true,
+      "requireLowercase": true
+    }
+  },
+  "notifications": {
+    "email": {
+      "enabled": true,
+      "smtp": "smtp.example.com",
+      "port": 587,
+      "from": "noreply@example.com"
+    },
+    "push": {
+      "enabled": true,
+      "provider": "firebase"
+    }
+  },
+  "appearance": {
+    "theme": "dark",
+    "sidebarCollapsed": false,
+    "fontSize": "medium",
+    "animations": true
+  }
+}

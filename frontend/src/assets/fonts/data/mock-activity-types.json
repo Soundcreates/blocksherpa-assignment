@@ -1,0 +1,14 @@
+[
+  { "type": "user_created", "label": "User Created", "color": "#4CAF50" },
+  { "type": "user_updated", "label": "User Updated", "color": "#2196F3" },
+  { "type": "user_deleted", "label": "User Deleted", "color": "#F44336" },
+  { "type": "settings_updated", "label": "Settings Updated", "color": "#FF9800" },
+  { "type": "login", "label": "Login", "color": "#9C27B0" },
+  { "type": "logout", "label": "Logout", "color": "#9C27B0" },
+  { "type": "export", "label": "Export", "color": "#00BCD4" },
+  { "type": "project_created", "label": "Project Created", "color": "#8BC34A" },
+  { "type": "project_updated", "label": "Project Updated", "color": "#FF5722" },
+  { "type": "comment", "label": "Comment", "color": "#607D8B" },
+  { "type": "file_uploaded", "label": "File Uploaded", "color": "#3F51B5" },
+  { "type": "file_deleted", "label": "File Deleted", "color": "#E91E63" }
+]

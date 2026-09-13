@@ -1,0 +1,58 @@
+[
+  {
+    "id": "1",
+    "user": "Alice Johnson",
+    "action": "created a new user",
+    "target": "Bob Smith",
+    "timestamp": "2026-06-17T10:30:00Z",
+    "type": "user_created"
+  },
+  {
+    "id": "2",
+    "user": "Bob Smith",
+    "action": "updated a setting",
+    "target": "Email Notifications",
+    "timestamp": "2026-06-17T09:15:00Z",
+    "type": "settings_updated"
+  },
+  {
+    "id": "3",
+    "user": "Carol White",
+    "action": "deleted a user",
+    "target": "John Doe",
+    "timestamp": "2026-06-17T08:45:00Z",
+    "type": "user_deleted"
+  },
+  {
+    "id": "4",
+    "user": "David Brown",
+    "action": "exported data report",
+    "target": "2026-06-16 Sales Report",
+    "timestamp": "2026-06-17T08:00:00Z",
+    "type": "export"
+  },
+  {
+    "id": "5",
+    "user": "Eve Davis",
+    "action": "logged in",
+    "target": "IP: 192.168.1.100",
+    "timestamp": "2026-06-17T07:30:00Z",
+    "type": "login"
+  },
+  {
+    "id": "6",
+    "user": "Frank Wilson",
+    "action": "created a new project",
+    "target": "Q3 Marketing Campaign",
+    "timestamp": "2026-06-16T18:00:00Z",
+    "type": "project_created"
+  },
+  {
+    "id": "7",
+    "user": "Grace Lee",
+    "action": "commented on a task",
+    "target": "Design Homepage",
+    "timestamp": "2026-06-16T16:30:00Z",
+    "type": "comment"
+  }
+]

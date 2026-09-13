@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Website Redesign",
+    "description": "Complete overhaul of the company website with new branding",
+    "status": "in-progress",
+    "progress": 65,
+    "team": ["Alice Johnson", "Bob Smith", "Carol White"],
+    "dueDate": "2026-07-15",
+    "priority": "high"
+  },
+  {
+    "id": 2,
+    "name": "Mobile App Launch",
+    "description": "Release of the new mobile application for iOS and Android",
+    "status": "in-review",
+    "progress": 90,
+    "team": ["David Brown", "Eve Davis"],
+    "dueDate": "2026-06-30",
+    "priority": "critical"
+  },
+  {
+    "id": 3,
+    "name": "Q3 Marketing Campaign",
+    "description": "Digital marketing campaign for the upcoming product launch",
+    "status": "planning",
+    "progress": 25,
+    "team": ["Frank Wilson", "Grace Lee", "Alice Johnson"],
+    "dueDate": "2026-08-01",
+    "priority": "medium"
+  },
+  {
+    "id": 4,
+    "name": "Admin Panel 2.0",
+    "description": "Rewrite of the admin panel with new features and improved UX",
+    "status": "in-progress",
+    "progress": 45,
+    "team": ["Bob Smith", "Eve Davis", "Henry Adams"],
+    "dueDate": "2026-09-15",
+    "priority": "medium"
+  }
+]

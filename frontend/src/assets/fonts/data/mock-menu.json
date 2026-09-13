@@ -1,0 +1,47 @@
+[
+  {
+    "key": "dashboard",
+    "label": "Dashboard",
+    "icon": "dashboard",
+    "path": "/dashboard",
+    "children": []
+  },
+  {
+    "key": "users",
+    "label": "Users",
+    "icon": "people",
+    "path": "/users",
+    "children": [
+      { "key": "list", "label": "User List", "path": "/users/list" },
+      { "key": "roles", "label": "Roles & Permissions", "path": "/users/roles" }
+    ]
+  },
+  {
+    "key": "projects",
+    "label": "Projects",
+    "icon": "project",
+    "path": "/projects",
+    "children": [
+      { "key": "overview", "label": "Overview", "path": "/projects/overview" },
+      { "key": "create", "label": "Create Project", "path": "/projects/create" }
+    ]
+  },
+  {
+    "key": "analytics",
+    "label": "Analytics",
+    "icon": "chart",
+    "path": "/analytics",
+    "children": []
+  },
+  {
+    "key": "settings",
+    "label": "Settings",
+    "icon": "settings",
+    "path": "/settings",
+    "children": [
+      { "key": "general", "label": "General", "path": "/settings/general" },
+      { "key": "security", "label": "Security", "path": "/settings/security" },
+      { "key": "appearance", "label": "Appearance", "path": "/settings/appearance" }
+    ]
+  }
+]

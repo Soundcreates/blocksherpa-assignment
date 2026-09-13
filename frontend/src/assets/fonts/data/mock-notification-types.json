@@ -1,0 +1,6 @@
+[
+  { "type": "info", "label": "Info", "color": "#2196F3", "icon": "info" },
+  { "type": "success", "label": "Success", "color": "#4CAF50", "icon": "check_circle" },
+  { "type": "warning", "label": "Warning", "color": "#FF9800", "icon": "warning" },
+  { "type": "critical", "label": "Critical", "color": "#F44336", "icon": "error" }
+]

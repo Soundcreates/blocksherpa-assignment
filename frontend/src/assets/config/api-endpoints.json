@@ -1,0 +1,22 @@
+{
+  "development": {
+    "baseUrl": "http://localhost:4000",
+    "endpoints": {
+      "auth": { "login": "/api/auth/login", "logout": "/api/auth/logout", "register": "/api/auth/register" },
+      "users": { "list": "/api/users", "create": "/api/users", "update": "/api/users/{id}", "delete": "/api/users/{id}" },
+      "projects": { "list": "/api/projects", "create": "/api/projects", "update": "/api/projects/{id}", "delete": "/api/projects/{id}" },
+      "analytics": { "dashboard": "/api/analytics/dashboard", "reports": "/api/analytics/reports" },
+      "settings": { "get": "/api/settings", "update": "/api/settings" }
+    }
+  },
+  "production": {
+    "baseUrl": "https://api.example.com",
+    "endpoints": {
+      "auth": { "login": "/api/auth/login", "logout": "/api/auth/logout", "register": "/api/auth/register" },
+      "users": { "list": "/api/users", "create": "/api/users", "update": "/api/users/{id}", "delete": "/api/users/{id}" },
+      "projects": { "list": "/api/projects", "create": "/api/projects", "update": "/api/projects/{id}", "delete": "/api/projects/{id}" },
+      "analytics": { "dashboard": "/api/analytics/dashboard", "reports": "/api/analytics/reports" },
+      "settings": { "get": "/api/settings", "update": "/api/settings" }
+    }
+  }
+}

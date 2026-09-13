@@ -2,6 +2,11 @@
 # REChain - Environment & Security
 # ==========================================
 
+# Never commit local environment files or credentials.
+**/.env
+**/.env.*
+!**/.env.example
+
 
 # API Keys and secrets (Additional protection)
 **/secrets/
@@ -172,4 +177,3 @@ docker-compose.override.yml
 !pnpm-lock.yaml
 !.gitkeep
 !backend/uploads/.gitkeep
-

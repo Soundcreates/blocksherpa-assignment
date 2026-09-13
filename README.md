@@ -148,6 +148,29 @@ GPT-4.1,  Firecrawl,  ImageKit,  Vercel,  Render
 
 <br/>
 
+## Smart contract assessment
+
+The property detail page includes an optional Polygon Amoy on-chain registry integration. The implementation lives in [`blockchain/`](blockchain/), and the UI lives in [`frontend/src/components/property-details/OnChainRegistryCard.tsx`](frontend/src/components/property-details/OnChainRegistryCard.tsx).
+
+### Run the contract tests
+
+```bash
+cd blockchain
+npm install
+npm test
+```
+
+### Deploy and connect the UI
+
+```bash
+cd blockchain
+cp .env.example .env
+# Set PRIVATE_KEY to a disposable Amoy test-wallet key
+npm run deploy:amoy
+```
+
+Copy the printed address into `frontend/.env` as `VITE_PROPERTY_REGISTRY_ADDRESS`, restart Vite, and open a property detail page. The card reads the listing by the hash of its location, lets the connected wallet register it, and links the confirmed transaction to PolygonScan. The wallet must be on Polygon Amoy (chain ID `80002`).
+
 
 ## Getting Started
 
@@ -482,4 +505,3 @@ Real-Estate-Website/
 
 
 </div>
-

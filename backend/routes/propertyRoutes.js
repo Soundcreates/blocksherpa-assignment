@@ -9,7 +9,7 @@ import { createDistributedRateLimiter } from '../utils/distributedRateLimiter.js
 const router = express.Router();
 
 // ── AI-specific distributed rate limiter (works across multiple instances) ────
-// Each AI call costs real Firecrawl + GitHub Models quota, so cap per IP/hour.
+// Each AI call costs real Firecrawl + Grok quota, so cap per IP/hour.
 // Uses filesystem-based storage to work across multiple server instances.
 const distributedLimiter = createDistributedRateLimiter({
     windowMs: 60 * 60 * 1000, // 1 hour window

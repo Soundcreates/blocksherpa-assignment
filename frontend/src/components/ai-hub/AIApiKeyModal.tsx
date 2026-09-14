@@ -9,19 +9,19 @@ interface AIApiKeyModalProps {
 }
 
 const AIApiKeyModal: React.FC<AIApiKeyModalProps> = ({ isOpen, onClose, onKeysChanged }) => {
-  const [githubKey, setGithubKey] = useState('');
+  const [grokKey, setGrokKey] = useState('');
   const [firecrawlKey, setFirecrawlKey] = useState('');
-  const [showGithub, setShowGithub] = useState(false);
+  const [showGrok, setShowGrok] = useState(false);
   const [showFirecrawl, setShowFirecrawl] = useState(false);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const hasGithub = !!apiKeyStorage.getGithubKey();
+  const hasGrok = !!apiKeyStorage.getGrokKey();
   const hasFirecrawl = !!apiKeyStorage.getFirecrawlKey();
 
   useEffect(() => {
     if (!isOpen) {
-      setGithubKey('');
+      setGrokKey('');
       setFirecrawlKey('');
       setToast(null);
     }
@@ -33,33 +33,21 @@ const AIApiKeyModal: React.FC<AIApiKeyModalProps> = ({ isOpen, onClose, onKeysCh
   };
 
   const handleSave = async () => {
-    if (!githubKey.trim() && !firecrawlKey.trim()) {
+    if (!grokKey.trim() && !firecrawlKey.trim()) {
       showToast('error', 'Enter at least one key to save.');
       return;
     }
 
-    const enteredGithub = githubKey.trim();
+    const enteredGrok = grokKey.trim();
     const enteredFirecrawl = firecrawlKey.trim();
 
-    // Lightweight format validation for newly entered keys
-    if (enteredGithub) {
-      if (!enteredGithub.startsWith('ghp_') && !enteredGithub.startsWith('github_pat_')) {
-        showToast('error', 'GitHub key should start with ghp_ or github_pat_');
-        return;
-      }
-    }
-    if (enteredFirecrawl) {
-      if (!enteredFirecrawl.startsWith('fc-')) {
-        showToast('error', 'Firecrawl key should start with fc-');
-        return;
-      }
-    }
+    // Provider format and permissions are validated by the backend.
 
-    const effectiveGithub = enteredGithub || apiKeyStorage.getGithubKey().trim();
+    const effectiveGrok = enteredGrok || apiKeyStorage.getGrokKey().trim();
     const effectiveFirecrawl = enteredFirecrawl || apiKeyStorage.getFirecrawlKey().trim();
 
-    if (!effectiveGithub || !effectiveFirecrawl) {
-      showToast('error', 'Both keys are required. Add both GitHub and Firecrawl keys to continue.');
+    if (!effectiveGrok || !effectiveFirecrawl) {
+      showToast('error', 'Both keys are required. Add both Grok and Firecrawl keys to continue.');
       return;
     }
 
@@ -67,18 +55,18 @@ const AIApiKeyModal: React.FC<AIApiKeyModalProps> = ({ isOpen, onClose, onKeysCh
 
     try {
       await aiAPI.validateKeys({
-        githubKey: effectiveGithub,
+        grokKey: effectiveGrok,
         firecrawlKey: effectiveFirecrawl,
       });
 
-      if (enteredGithub) {
-        apiKeyStorage.setGithubKey(enteredGithub);
+      if (enteredGrok) {
+        apiKeyStorage.setGrokKey(enteredGrok);
       }
       if (enteredFirecrawl) {
         apiKeyStorage.setFirecrawlKey(enteredFirecrawl);
       }
 
-      setGithubKey('');
+      setGrokKey('');
       setFirecrawlKey('');
       showToast('success', 'Keys verified and saved! Stored only in your browser.');
       onKeysChanged();
@@ -140,25 +128,25 @@ const AIApiKeyModal: React.FC<AIApiKeyModalProps> = ({ isOpen, onClose, onKeysCh
 
         {/* Status badges */}
         <div className="mx-6 mt-4 grid grid-cols-2 gap-3">
-          <StatusBadge label="GitHub Models" active={hasGithub} />
+          <StatusBadge label="Grok" active={hasGrok} />
           <StatusBadge label="Firecrawl" active={hasFirecrawl} />
         </div>
 
         {/* Inputs */}
         <div className="px-6 py-4 space-y-4">
           <KeyInput
-            label="GitHub Models API Key"
-            linkText="Get free key →"
-            linkHref="https://github.com/marketplace/models"
-            placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-            value={githubKey}
-            onChange={setGithubKey}
-            show={showGithub}
-            onToggleShow={() => setShowGithub(v => !v)}
+            label="Grok API Key"
+            linkText="Get API key →"
+            linkHref="https://console.x.ai/"
+            placeholder="xai-xxxxxxxxxxxxxxxxxxxx"
+            value={grokKey}
+            onChange={setGrokKey}
+            show={showGrok}
+            onToggleShow={() => setShowGrok(v => !v)}
           />
           <KeyInput
             label="Firecrawl API Key"
-            linkText="Get free key →"
+            linkText="Get API key →"
             linkHref="https://firecrawl.dev"
             placeholder="fc-xxxxxxxxxxxxxxxxxxxx"
             value={firecrawlKey}
@@ -180,14 +168,14 @@ const AIApiKeyModal: React.FC<AIApiKeyModalProps> = ({ isOpen, onClose, onKeysCh
         <div className="flex items-center gap-3 px-6 pb-6">
           <button
             onClick={handleSave}
-            disabled={saving || (!githubKey.trim() && !firecrawlKey.trim())}
+            disabled={saving || (!grokKey.trim() && !firecrawlKey.trim())}
             className="flex-1 flex items-center justify-center gap-2 bg-[#D4755B] hover:bg-[#C05621] disabled:opacity-40 disabled:cursor-not-allowed text-white font-manrope font-semibold text-sm py-3 rounded-xl transition-all"
           >
             <Save className="w-4 h-4" />
             {saving ? 'Verifying Keys...' : 'Save Keys'}
           </button>
 
-          {(hasGithub || hasFirecrawl) && (
+          {(hasGrok || hasFirecrawl) && (
             <button
               onClick={handleClear}
               className="flex items-center gap-2 bg-red-600/15 hover:bg-red-600/25 border border-red-500/30 text-red-400 font-manrope font-semibold text-sm py-3 px-5 rounded-xl transition-all"

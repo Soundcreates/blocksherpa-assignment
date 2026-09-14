@@ -109,7 +109,7 @@ const AIHubProductionPage: React.FC = () => {
     {
       icon: 'analytics',
       title: 'Market Analysis',
-      description: 'Get GPT-4.1 powered analysis with best value picks and personalized recommendations.',
+      description: 'Get Grok 4.6 powered analysis with best value picks and personalized recommendations.',
     },
     {
       icon: 'trending_up',
@@ -152,7 +152,7 @@ const AIHubProductionPage: React.FC = () => {
               AI Property Hub
             </h1>
             <p className="font-manrope text-lg text-[#9ca3af] leading-relaxed mb-10 max-w-2xl mx-auto">
-              Our AI Property Hub uses GPT-4.1 to analyze real estate data, provide market insights,
+              Our AI Property Hub uses Grok 4.6 to analyze real estate data, provide market insights,
               and help you find the perfect property. This feature is available when you run the project locally.
             </p>
 
@@ -340,7 +340,7 @@ const AIHubDevPage: React.FC = () => {
     const serverCode = err?.response?.data?.error || '';
 
     if (status === 403 || serverCode === 'KEYS_REQUIRED' || serverCode === 'KEYS_INVALID') {
-      return { msg: 'Your API keys are missing or invalid. Please add your GitHub Models and Firecrawl keys.', isKeyError: true };
+      return { msg: 'Your API keys are missing or invalid. Please add your Grok and Firecrawl keys.', isKeyError: true };
     }
     if (serverCode === 'KEY_VALIDATION_FAILED') {
       return { msg: 'We could not validate your API keys right now. Please try again shortly.', isKeyError: false };

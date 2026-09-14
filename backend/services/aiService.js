@@ -1,13 +1,11 @@
 import { config } from "../config/config.js";
-import ModelClient, { isUnexpected } from "@azure-rest/ai-inference";
-import { AzureKeyCredential } from "@azure/core-auth";
 import { registry } from "../utils/circuitBreaker.js";
 import logger from "../utils/logger.js";
 
-const PRIMARY_MODEL = "gpt-4.1-mini";
-const FALLBACK_MODEL = "gpt-4.1-nano";
+const PRIMARY_MODEL = config.grokModel || "grok-4.6";
+const FALLBACK_MODEL = config.grokFallbackModel || "grok-4.3";
 
-// Request timeout for GitHub Models calls (30 seconds)
+// Request timeout for Grok calls (30 seconds)
 const AI_TIMEOUT_MS = 30_000;
 
 const SYSTEM_PROMPT = `You are a concise real estate expert assistant.
@@ -20,13 +18,10 @@ Rules:
 class AIService {
   constructor(apiKey) {
     if (!apiKey) {
-      throw new Error('[AIService] API key is required — no fallback allowed.');
+      throw new Error('[AIService] API key is required.');
     }
     this.apiKey = apiKey;
-    this.client = ModelClient(
-      "https://models.inference.ai.azure.com",
-      new AzureKeyCredential(this.apiKey)
-    );
+    this.baseUrl = (config.grokBaseUrl || "https://api.x.ai/v1").replace(/\/+$/, "");
 
     // Initialize circuit breakers for each model
     this.primaryCircuit = registry.getBreaker('ai-primary', {
@@ -42,28 +37,53 @@ class AIService {
     });
   }
 
+  async _request(model, messages, options = {}, signal) {
+    const response = await fetch(this.baseUrl + "/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.apiKey,
+      },
+      body: JSON.stringify({ model, messages, ...options }),
+      signal,
+    });
+
+    const responseText = await response.text();
+    let payload = {};
+    try {
+      payload = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      payload = { raw: responseText };
+    }
+
+    if (!response.ok) {
+      const errorMessage = payload?.error?.message || ("HTTP " + response.status);
+      const error = new Error("Grok API error: " + errorMessage);
+      error.statusCode = response.status;
+      error.status = response.status;
+      throw error;
+    }
+
+    return payload;
+  }
+
   async validateApiKey() {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 15_000);
 
     try {
-      const response = await this.client.path('/chat/completions').post({
-        body: {
-          messages: [
-            { role: 'system', content: 'Reply with OK only.' },
-            { role: 'user', content: 'OK?' }
-          ],
-          model: FALLBACK_MODEL,
-          temperature: 0,
-          max_tokens: 8,
-          top_p: 1
-        },
-        ...(controller.signal ? { signal: controller.signal } : {}),
-      });
+      const response = await this._request(
+        FALLBACK_MODEL,
+        [
+          { role: "system", content: "Reply with OK only." },
+          { role: "user", content: "OK?" }
+        ],
+        { temperature: 0, max_tokens: 8, top_p: 1 },
+        controller.signal
+      );
 
-      if (isUnexpected(response)) {
-        const errorMsg = response.body.error?.message || 'Unknown AI API error';
-        throw new Error(`AI API error: ${errorMsg}`);
+      if (!response?.choices?.[0]?.message?.content) {
+        throw new Error("Grok API returned an empty response.");
       }
 
       return { valid: true };
@@ -73,7 +93,7 @@ class AIService {
   }
 
   /**
-   * Generate text using GitHub Models with automatic fallback and circuit breaker protection.
+   * Generate text using Grok with automatic fallback and circuit breaker protection.
    * Tries PRIMARY_MODEL first; falls back to FALLBACK_MODEL on rate-limit or error.
    */
   async generateText(prompt, systemPrompt = SYSTEM_PROMPT) {
@@ -88,7 +108,7 @@ class AIService {
       logger.warn('Primary circuit breaker triggered', { model: PRIMARY_MODEL, error: error.message });
     }
 
-    // Fallback to nano model with circuit breaker
+    // Fallback to the secondary model with circuit breaker
     try {
       logger.warn('Falling back to secondary model', { from: PRIMARY_MODEL, to: FALLBACK_MODEL });
 
@@ -108,46 +128,44 @@ class AIService {
     const controller = new AbortController();
     const timer = setTimeout(() => {
       controller.abort();
-      logger.warn('AI model request timeout', { model, timeoutMs: AI_TIMEOUT_MS });
+      logger.warn("AI model request timeout", { model, timeoutMs: AI_TIMEOUT_MS });
     }, AI_TIMEOUT_MS);
 
     try {
-      logger.info('Calling AI model', { model });
+      logger.info("Calling Grok model", { model });
       const startTime = Date.now();
 
-      const response = await this.client.path("/chat/completions").post({
-        body: {
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: prompt }
-          ],
-          model,
+      const response = await this._request(
+        model,
+        [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt }
+        ],
+        {
           temperature: 0.3,
-          max_tokens: 4000,   // increased for 12 properties with Phase 3 fields (match_score, red_flags, etc.)
+          max_tokens: 4000,
           top_p: 1
         },
-        // Pass abort signal if the SDK supports it
-        ...(controller.signal ? { signal: controller.signal } : {}),
-      });
+        controller.signal
+      );
 
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-      logger.info('AI model responded', { model, elapsedSeconds: elapsed });
+      logger.info("Grok model responded", { model, elapsedSeconds: elapsed });
 
-      if (isUnexpected(response)) {
-        const errorMsg = response.body.error?.message || 'Unknown AI API error';
-        logger.error('AI model error', { model, error: errorMsg });
-        throw new Error(`AI API error: ${errorMsg}`);
+      const content = response?.choices?.[0]?.message?.content;
+      if (!content) {
+        throw new Error("Grok API returned an empty response.");
       }
 
-      return response.body.choices[0].message.content;
+      return content;
     } catch (error) {
-      if (error.name === 'AbortError') {
-        logger.error('AI model request aborted', { model, reason: 'timeout' });
-        throw new Error(`AI request timeout after ${AI_TIMEOUT_MS / 1000}s`);
-      } else {
-        logger.error('AI model exception', { model, error: error.message });
-        throw error;
+      if (error.name === "AbortError" || error.code === "ABORT_ERR") {
+        logger.error("Grok model request aborted", { model, reason: "timeout" });
+        throw new Error("Grok request timeout after " + (AI_TIMEOUT_MS / 1000) + "s");
       }
+
+      logger.error("Grok model exception", { model, error: error.message });
+      throw error;
     } finally {
       clearTimeout(timer);
     }

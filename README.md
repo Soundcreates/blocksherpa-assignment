@@ -8,7 +8,7 @@ This is a **full-stack real estate platform** built for evaluating engineering c
 
 
 **Core Features:**
-- 🔍 AI-powered property search (Firecrawl + GPT-4.1)
+- 🔍 AI-powered property search (Firecrawl + Grok 4.6)
 - 🏢 Admin dashboard (CRUD operations)
 - 📅 Appointment scheduling
 - 📊 Real-time analytics
@@ -40,7 +40,7 @@ graph TD
     F -->|Structured JSON| G["Backend<br/>Processing"]
     
     G -->|Deduplicate<br/>by address| H["Code-side Filter<br/>Reject rentals/PG"]
-    H -->|Clean properties| I["GitHub Models<br/>GPT-4.1"]
+    H -->|Clean properties| I["Grok 4.6"]
     
     I -->|Ranked + Insights| J["Response<br/>to Frontend"]
     
@@ -73,7 +73,7 @@ flowchart LR
         DB[("MongoDB Atlas<br/>Database")]
         IK["ImageKit CDN<br/>Images"]
         FC["Firecrawl API<br/>Web Scraping<br/>Multi-source"]
-        AI["GitHub Models<br/>GPT-4.1<br/>AI Ranking"]
+        AI["Grok 4.6<br/>AI Ranking"]
         EMAIL["Brevo SMTP<br/>Email Service"]
     end
     
@@ -94,24 +94,24 @@ flowchart LR
 
 ### 🔑 User-Owned API Keys
 
-Users provide their **own free keys** in the browser. Keys are stored in localStorage only — never on the server.
+Users can provide their own keys in the browser. Deployment credentials can also be configured securely on the backend.
 
 ```
 User's browser (localStorage)
-  REChain_github_key   = "ghp_xxx"
+  REChain_grok_key   = "xai-xxx"
   REChain_firecrawl_key = "fc-xxx"
          │
-         │  X-Github-Key / X-Firecrawl-Key headers
+         │  X-Grok-Key / X-Firecrawl-Key headers
          ▼
   Backend creates per-request service instances
-  (Server env keys are NEVER used as fallback)
+  (Render env vars are secure server defaults; browser keys override them)
 ```
 
 **Get your free keys in ~2 minutes:**
 
 | Service | Link | Free Tier |
 |---|---|---|
-| GitHub Models (GPT-4.1) | [github.com/marketplace/models](https://github.com/marketplace/models) | Free with any GitHub account |
+| Grok 4.6 | [console.x.ai](https://console.x.ai/) | Create an API key in the xAI console |
 | Firecrawl (web scraping) | [firecrawl.dev](https://firecrawl.dev) | 500 free credits/month |
 <br/>
 
@@ -143,7 +143,7 @@ React,  TypeScript,  Vite,  Tailwind,  Framer Motion,  React Router
 Node.js,  Express,  MongoDB,  JWT,  Nodemailer
 <br/>
 ### AI & Infrastructure
-GPT-4.1,  Firecrawl,  ImageKit,  Vercel,  Render
+Grok 4.6,  Firecrawl,  ImageKit,  Vercel,  Render
 </div>
 
 <br/>
@@ -230,9 +230,9 @@ IMAGEKIT_PRIVATE_KEY=private_your_imagekit_private_key
 IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
 
 # Optional: AI Services (for AI Property Hub)
-# Users can provide their own keys via frontend, these are server fallbacks
+# Users can provide their own keys via the frontend; Render env vars are secure server defaults
 # FIRECRAWL_API_KEY=fc-your_firecrawl_api_key
-# GITHUB_MODELS_API_KEY=github_pat_your_github_token
+# GROK_API_KEY=xai-your-api-key
 ```
 
 ```bash
@@ -244,7 +244,7 @@ npm run dev   # Starts backend on http://localhost:4000
 - **ImageKit**: [imagekit.io](https://imagekit.io) - Free 10GB + CDN
 - **Brevo SMTP**: [brevo.com](https://brevo.com) - Free 300 emails/day
 - **Firecrawl**: [firecrawl.dev](https://firecrawl.dev) - Free 500 pages/month
-- **GitHub Models**: [github.com/marketplace/models](https://github.com/marketplace/models) - Free with GitHub account
+- **Grok**: [console.x.ai](https://console.x.ai/) - Create an API key in the xAI console
 
 </details>
 
@@ -382,8 +382,8 @@ npm run dev   # Starts admin panel on http://localhost:5174
 
 | Method | Endpoint | Description |
 |---|---|---|
-| POST | /api/ai/search | AI property search (requires user API keys) |
-| GET | /api/locations/:city/trends | Location market trends (requires user API keys) |
+| POST | /api/ai/search | AI property search (uses browser keys or server env vars) |
+| GET | /api/locations/:city/trends | Location market trends (uses browser keys or server env vars) |
 | POST | /api/forms/submit | Contact form submission |
 | GET | /api/admin/stats | Dashboard statistics (admin) |
 
@@ -410,7 +410,7 @@ npm run dev   # Starts admin panel on http://localhost:5174
 
 **Optional (for AI features):**
 - [ ] **Firecrawl** API key (500 free pages/month)
-- [ ] **GitHub Models** token (free with GitHub account)
+- [ ] **Grok** API key (from the xAI console)
 
 </details>
 
@@ -464,7 +464,7 @@ Real-Estate-Website/
 ├── routes/         → Express route definitions
 ├── services/
 │   ├── firecrawlService.js  → Smart Zap Imóveis scraping (30+ cities, URL construction, retry logic)
-│   └── aiService.js         → GPT-4.1 property analysis + location trends
+│   └── aiService.js         → Grok 4.6 property analysis + location trends
 ├── utils/          → AI response validation & safe parsing
 └── server.js       → Entry point (Helmet, CORS, rate limiting)
 ```

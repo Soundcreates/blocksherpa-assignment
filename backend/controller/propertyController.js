@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { createFirecrawlService } from '../services/firecrawlService.js';
 import { createAIService } from '../services/aiService.js';
+import { config } from '../config/config.js';
 import { validateAndFixPropertyAnalysis, validateAndFixLocationAnalysis } from '../utils/validateAIResponse.js';
 import imagekit from '../config/imagekit.js';
 import Property from '../models/propertyModel.js';
@@ -66,17 +67,22 @@ export async function getCacheStats() {
 // ── Key validation ────────────────────────────────────────────────────────────
 
 /**
- * Strict gate: both user-provided keys MUST be present.
- * Throws a structured 403 error object if either is missing.
- * The server's own env-var keys are NEVER used as a fallback.
+ * Resolve per-request browser keys first, then secure server-side defaults.
+ * Browser keys are useful for personal quota; deployment env vars keep the app
+ * usable without exposing provider secrets in the frontend.
  */
 function resolveServices(req) {
-    const githubKey = req.headers['x-github-key']?.trim();
-    const firecrawlKey = req.headers['x-firecrawl-key']?.trim();
+    const grokKey = req.headers['x-grok-key']?.trim() || config.grokApiKey;
+    const firecrawlKey = req.headers['x-firecrawl-key']?.trim() || config.firecrawlApiKey;
 
-    if (!githubKey || !firecrawlKey) {
+    if (!grokKey || !firecrawlKey) {
+        const missingProviders = [
+            !grokKey && 'Grok',
+            !firecrawlKey && 'Firecrawl',
+        ].filter(Boolean).join(' and ');
         const err = new Error(
-            'API keys required. Please add your free GitHub Models and Firecrawl API keys to use the AI Hub.'
+            (missingProviders || 'AI service') +
+            ' API key required. Add the deployment environment variable or provide a browser key.'
         );
         err.statusCode = 403;
         err.code = 'KEYS_REQUIRED';
@@ -84,7 +90,7 @@ function resolveServices(req) {
     }
 
     return {
-        aiService: createAIService(githubKey),
+        aiService: createAIService(grokKey),
         firecrawlService: createFirecrawlService(firecrawlKey),
     };
 }
@@ -403,36 +409,36 @@ export const validateApiKeys = async (req, res) => {
 
     const { aiService, firecrawlService } = services;
 
-    const [githubResult, firecrawlResult] = await Promise.allSettled([
+    const [grokResult, firecrawlResult] = await Promise.allSettled([
         aiService.validateApiKey(),
         firecrawlService.validateApiKey(),
     ]);
 
-    const githubErr = githubResult.status === 'rejected' ? githubResult.reason : null;
+    const grokErr = grokResult.status === 'rejected' ? grokResult.reason : null;
     const firecrawlErr = firecrawlResult.status === 'rejected' ? firecrawlResult.reason : null;
 
     logger.debug('Key validation', {
-        githubStatus: githubResult.status,
+        grokStatus: grokResult.status,
         firecrawlStatus: firecrawlResult.status,
-        githubError: githubErr?.message || null,
+        grokError: grokErr?.message || null,
         firecrawlError: firecrawlErr?.message || null,
     });
 
-    if (!githubErr && !firecrawlErr) {
+    if (!grokErr && !firecrawlErr) {
         return res.json({
             success: true,
             message: 'API keys are valid.',
-            github: { valid: true },
+            grok: { valid: true },
             firecrawl: { valid: true },
         });
     }
 
-    if (githubErr && isUnauthorizedError(githubErr)) {
+    if (grokErr && isUnauthorizedError(grokErr)) {
         return res.status(403).json({
             success: false,
-            message: 'Your GitHub Models API key is invalid or expired. Please update it and try again.',
+            message: 'Your Grok API key is invalid or expired. Please update it and try again.',
             error: 'KEYS_INVALID',
-            provider: 'github',
+            provider: 'grok',
         });
     }
 

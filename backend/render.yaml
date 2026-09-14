@@ -9,5 +9,15 @@ services:
         value: production
       - key: PORT
         value: 10000
+      - key: GROK_API_KEY
+        sync: false
+      - key: FIRECRAWL_API_KEY
+        sync: false
+      - key: GROK_BASE_URL
+        value: https://api.x.ai/v1
+      - key: GROK_MODEL
+        value: grok-4.6
+      - key: GROK_FALLBACK_MODEL
+        value: grok-4.3
     # Health check endpoint
     healthCheckPath: /status

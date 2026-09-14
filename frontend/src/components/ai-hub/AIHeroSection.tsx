@@ -147,12 +147,6 @@ const AIHeroSection: React.FC<AIHeroSectionProps> = ({ onSearch, loading, extern
     e.preventDefault();
     if (!city.trim()) return;
 
-    // Guard: require API keys before firing any request
-    if (!keysReady) {
-      setShowKeyModal(true);
-      return;
-    }
-
     // Convert to Crores for the backend
     const rawValue = parseFloat(maxBudget) || 2;
     const valueInCrores = budgetUnit === 'Lakh' ? rawValue / 100 : rawValue;
@@ -203,7 +197,7 @@ const AIHeroSection: React.FC<AIHeroSectionProps> = ({ onSearch, loading, extern
             <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 shadow-sm rounded-xl px-5 py-3">
               <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
               <p className="font-manrope text-sm font-medium text-emerald-800 flex-1">
-                Your API keys are active — AI searches use your own quota.
+                Your browser keys are active — AI searches use your own quota.
               </p>
               <button
                 onClick={() => setShowKeyModal(true)}
@@ -216,13 +210,13 @@ const AIHeroSection: React.FC<AIHeroSectionProps> = ({ onSearch, loading, extern
             <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 shadow-sm rounded-xl px-5 py-3">
               <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
               <p className="font-manrope text-sm font-medium text-amber-800 flex-1">
-                Add your <strong className="text-amber-900 font-bold">free</strong> GitHub Models &amp; Firecrawl keys — use your own quota.
+                Add Grok and Firecrawl keys for your own quota, or use server-configured credentials.
               </p>
               <button
                 onClick={() => setShowKeyModal(true)}
                 className="flex items-center gap-1.5 bg-amber-100 hover:bg-amber-200 border border-amber-200 text-amber-800 font-manrope font-bold text-xs px-4 py-2 rounded-lg transition-all whitespace-nowrap"
               >
-                <KeyRound className="w-3.5 h-3.5" /> Set Up Keys
+                <KeyRound className="w-3.5 h-3.5" /> Add Keys
               </button>
             </div>
           )}
@@ -459,18 +453,13 @@ const AIHeroSection: React.FC<AIHeroSectionProps> = ({ onSearch, loading, extern
             <div className="relative group mt-2">
               <button
                 type="submit"
-                disabled={loading || !city.trim() || !keysReady}
+                disabled={loading || !city.trim()}
                 className="w-full bg-[#D4755B] hover:bg-[#C05621] disabled:opacity-50 disabled:cursor-not-allowed text-white font-manrope font-semibold text-lg py-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#D4755B]/20 hover:shadow-xl hover:shadow-[#D4755B]/30"
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
                     Searching properties…
-                  </>
-                ) : !keysReady ? (
-                  <>
-                    <KeyRound className="w-5 h-5" />
-                    Set API Keys to Search
                   </>
                 ) : (
                   <>
@@ -479,13 +468,7 @@ const AIHeroSection: React.FC<AIHeroSectionProps> = ({ onSearch, loading, extern
                   </>
                 )}
               </button>
-              {/* Tooltip shown when keys are missing */}
-              {!keysReady && !loading && (
-                <div className="absolute -top-12 left-1/2 -translate-x-1/2 hidden group-hover:block bg-[#221410] border border-[#E6E0DA]/20 text-white font-manrope text-xs rounded-lg px-4 py-2 whitespace-nowrap pointer-events-none shadow-xl z-10 transition-opacity">
-                  Add your GitHub Models &amp; Firecrawl keys first
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#221410] border-b border-r border-[#E6E0DA]/20 rotate-45" />
-                </div>
-              )}
+
             </div>
 
             {loading && (

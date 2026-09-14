@@ -130,34 +130,34 @@ export const aiAPI = {
     type?: string;
     category?: string;
   }) => {
-    const githubKey    = localStorage.getItem('REChain_github_key');
+    const grokKey    = localStorage.getItem('REChain_grok_key');
     const firecrawlKey = localStorage.getItem('REChain_firecrawl_key');
     return apiClient.post('/ai/search', data, {
       headers: {
-        ...(githubKey    && { 'X-Github-Key':    githubKey }),
+        ...(grokKey    && { 'X-Grok-Key':    grokKey }),
         ...(firecrawlKey && { 'X-Firecrawl-Key': firecrawlKey }),
       },
     });
   },
 
   locationTrends: (city: string) => {
-    const githubKey    = localStorage.getItem('REChain_github_key');
+    const grokKey    = localStorage.getItem('REChain_grok_key');
     const firecrawlKey = localStorage.getItem('REChain_firecrawl_key');
     return apiClient.get(`/locations/${encodeURIComponent(city)}/trends`, {
       headers: {
-        ...(githubKey    && { 'X-Github-Key':    githubKey }),
+        ...(grokKey    && { 'X-Grok-Key':    grokKey }),
         ...(firecrawlKey && { 'X-Firecrawl-Key': firecrawlKey }),
       },
     });
   },
 
-  validateKeys: (keys?: { githubKey?: string; firecrawlKey?: string }) => {
-    const githubKey = (keys?.githubKey ?? localStorage.getItem('REChain_github_key') ?? '').trim();
+  validateKeys: (keys?: { grokKey?: string; firecrawlKey?: string }) => {
+    const grokKey = (keys?.grokKey ?? localStorage.getItem('REChain_grok_key') ?? '').trim();
     const firecrawlKey = (keys?.firecrawlKey ?? localStorage.getItem('REChain_firecrawl_key') ?? '').trim();
 
     return apiClient.post('/ai/validate-keys', {}, {
       headers: {
-        ...(githubKey && { 'X-Github-Key': githubKey }),
+        ...(grokKey && { 'X-Grok-Key': grokKey }),
         ...(firecrawlKey && { 'X-Firecrawl-Key': firecrawlKey }),
       },
     });
@@ -166,13 +166,13 @@ export const aiAPI = {
 
 // Helpers to read/write user API keys in localStorage
 export const apiKeyStorage = {
-  getGithubKey:    ()    => localStorage.getItem('REChain_github_key') || '',
+  getGrokKey:    ()    => localStorage.getItem('REChain_grok_key') || '',
   getFirecrawlKey: ()    => localStorage.getItem('REChain_firecrawl_key') || '',
-  setGithubKey:    (key: string) => localStorage.setItem('REChain_github_key', key),
+  setGrokKey:    (key: string) => localStorage.setItem('REChain_grok_key', key),
   setFirecrawlKey: (key: string) => localStorage.setItem('REChain_firecrawl_key', key),
-  hasKeys: () => !!(localStorage.getItem('REChain_github_key') && localStorage.getItem('REChain_firecrawl_key')),
+  hasKeys: () => !!(localStorage.getItem('REChain_grok_key') && localStorage.getItem('REChain_firecrawl_key')),
   clear: () => {
-    localStorage.removeItem('REChain_github_key');
+    localStorage.removeItem('REChain_grok_key');
     localStorage.removeItem('REChain_firecrawl_key');
   },
 };

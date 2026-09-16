@@ -1,88 +1,92 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
-import { Toaster } from 'sonner';
-import { AuthProvider } from './contexts/AuthContext';
-import PageTransition from './components/common/PageTransition';
-import ScrollToTop from './components/common/ScrollToTop';
-import StructuredData from './components/common/StructuredData';
+import OnChainRegistryCard from './components/property-details/OnChainRegistryCard';
 
-// Lazy load pages for better performance (Code Splitting)
-const HomePage = lazy(() => import('./pages/HomePage'));
-const PropertiesPage = lazy(() => import('./pages/PropertiesPage'));
-const PropertyDetailsPage = lazy(() => import('./pages/PropertyDetailsPage'));
-const AIPropertyHubPage = lazy(() => import('./pages/AIPropertyHubPage'));
-const AboutUsPage = lazy(() => import('./pages/AboutUsPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-const SignInPage = lazy(() => import('./pages/SignInPage'));
-const SignUpPage = lazy(() => import('./pages/SignUpPage'));
-const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
-const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
-const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage'));
-const AddPropertyPage = lazy(() => import('./pages/AddPropertyPage'));
-const MyListingsPage = lazy(() => import('./pages/MyListingsPage'));
+const property = {
+  title: 'The Glass Pavilion',
+  location: '221B Baker Street, London',
+  price: 125_000_000,
+  priceLabel: '₹1.25 Cr',
+  type: 'Contemporary townhouse',
+  beds: 3,
+  baths: 2,
+  area: 148,
+  description:
+    'A light-filled townhouse with quiet garden views, considered materials, and a flexible layout for modern city living.',
+  highlights: ['Private courtyard', 'South-facing studio', 'Walkable neighbourhood'],
+};
 
-function NotFoundPage() {
+function App() {
   return (
-    <PageTransition className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F4]">
-      <h1 className="font-fraunces text-6xl font-bold text-[#D4755B] mb-4">404</h1>
-      <p className="font-manrope text-xl text-[#374151] mb-8">Page not found</p>
-      <a href="/" className="bg-[#D4755B] text-white font-manrope font-bold px-8 py-3 rounded-lg hover:bg-[#B86851] transition-all">
-        Go Home
-      </a>
-    </PageTransition>
+    <main className="app-shell">
+      <nav className="site-nav" aria-label="Main navigation">
+        <a className="brand" href="/" aria-label="REChain home">
+          <span className="brand-mark" aria-hidden="true">R</span>
+          <span>RE<span>Chain</span></span>
+        </a>
+        <span className="network-badge">POLYGON AMOY · TESTNET</span>
+      </nav>
+
+      <section className="page-grid">
+        <div className="intro-column">
+          <p className="eyebrow">PROPERTY DETAIL · WEB3 REGISTRY DEMO</p>
+          <h1>{property.title}</h1>
+          <p className="lede">A real-world listing with an independently verifiable registry record.</p>
+
+          <div className="property-visual" aria-label="Abstract architectural illustration" role="img">
+            <div className="visual-grid" />
+            <div className="visual-sun" />
+            <div className="visual-copy">
+              <span>RE / 01</span>
+              <strong>GLASS<br />PAVILION</strong>
+            </div>
+          </div>
+
+          <div className="property-facts" aria-label="Property facts">
+            <div>
+              <span>Location</span>
+              <strong>{property.location}</strong>
+            </div>
+            <div>
+              <span>Type</span>
+              <strong>{property.type}</strong>
+            </div>
+            <div>
+              <span>Asking price</span>
+              <strong>{property.priceLabel}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div className="detail-column">
+          <div className="detail-card">
+            <div className="detail-card-header">
+              <div>
+                <p className="eyebrow">THE LISTING</p>
+                <h2>Designed for everyday light.</h2>
+              </div>
+              <span className="status-chip">AVAILABLE</span>
+            </div>
+            <p className="description">{property.description}</p>
+            <div className="stat-row">
+              <div><strong>{property.beds}</strong><span>BEDS</span></div>
+              <div><strong>{property.baths}</strong><span>BATHS</span></div>
+              <div><strong>{property.area}</strong><span>SQM</span></div>
+            </div>
+            <div className="highlight-list">
+              {property.highlights.map((highlight) => (
+                <span key={highlight}>{highlight}</span>
+              ))}
+            </div>
+          </div>
+
+          <OnChainRegistryCard propertyAddress={property.location} price={property.price} />
+
+          <p className="footer-note">
+            No backend or account system is involved. The connected wallet signs the registry transaction directly on Polygon Amoy.
+          </p>
+        </div>
+      </section>
+    </main>
   );
 }
 
-function PageLoader() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FAF8F4]">
-      <div className="w-12 h-12 border-4 border-[#D4755B] border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  );
-}
-
-function AnimatedRoutes() {
-  const location = useLocation();
-
-  return (
-    <>
-      {/* Structured data outside AnimatePresence - static elements don't need animation */}
-      <StructuredData type="website" />
-      <StructuredData type="organization" />
-
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
-          <Route path="/properties" element={<PageTransition><PropertiesPage /></PageTransition>} />
-          <Route path="/property/:id" element={<PageTransition><PropertyDetailsPage /></PageTransition>} />
-          <Route path="/ai-hub" element={<PageTransition><AIPropertyHubPage /></PageTransition>} />
-          <Route path="/about" element={<PageTransition><AboutUsPage /></PageTransition>} />
-          <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
-          <Route path="/signin" element={<PageTransition><SignInPage /></PageTransition>} />
-          <Route path="/signup" element={<PageTransition><SignUpPage /></PageTransition>} />
-          <Route path="/forgot-password" element={<PageTransition><ForgotPasswordPage /></PageTransition>} />
-          <Route path="/reset/:token" element={<PageTransition><ResetPasswordPage /></PageTransition>} />
-          <Route path="/verify-email/:token" element={<PageTransition><VerifyEmailPage /></PageTransition>} />
-          <Route path="/add-property" element={<PageTransition><AddPropertyPage /></PageTransition>} />
-          <Route path="/my-listings" element={<PageTransition><MyListingsPage /></PageTransition>} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </AnimatePresence>
-    </>
-  );
-}
-
-export default function App() {
-  return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <AuthProvider>
-        <Suspense fallback={<PageLoader />}>
-          <AnimatedRoutes />
-        </Suspense>
-        <Toaster position="top-center" richColors />
-      </AuthProvider>
-    </BrowserRouter>
-  );
-}
+export default App;
